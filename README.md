@@ -7,7 +7,7 @@
 먼저 메인 프레임워크인 `RIA_lerobot` 환경이 구성되어 있어야 합니다.
 
 ```bash
-git clone [https://github.com/RIA-acb/RIA_lerobot.git](https://github.com/RIA-acb/RIA_lerobot.git)
+git clone https://github.com/RIA-acb/RIA_lerobot.git
 cd RIA_lerobot
 pip install -e .
 ```
@@ -18,10 +18,8 @@ pip install -e .
 
 ```bash
 # RIA_lerobot 루트 디렉토리에서 실행
-mkdir -p outputs/smolvla_piper_model
-
-# 모델 체크포인트 및 설정 파일들을 해당 폴더로 이동 (예시)
-# mv /path/to/your/checkpoints/* outputs/smolvla_piper_model/
+mkdir -p outputs/train
+git clone https://github.com/RIA-acb/smolvla_piper_dataset.git
 ```
 
 **필수 폴더 구조:**
@@ -29,10 +27,11 @@ mkdir -p outputs/smolvla_piper_model
 RIA_lerobot/
 ├── lerobot/
 ├── outputs/
-│   └── smolvla_piper_model/       # 모델 체크포인트 디렉토리
-│       ├── config.json
-│       ├── model.safetensors      # (또는 pytorch_model.bin)
-│       └── ...
+      └── train/
+│       └── smolvla_piper_dataset/       # 모델 체크포인트 디렉토리
+│       
+│       
+│ 
 └── ...
 ```
 
@@ -42,16 +41,10 @@ RIA_lerobot/
 
 ```bash
 lerobot-evaluate \
-  --policy.path=outputs/smolvla_piper_model \
-  --env.name=piper_env \
-  --eval.n_episodes=10 \
-  --eval.batch_size=1 \
-  --device=cuda
+  --robot.type=piper_follower \
+  --robot.port=can_number \
+  --robot.cameras="{ front: {type: opencv, index_or_path: camera_number, width: 640, height: 480, fps: 30}, top: {type: opencv, index_or_path: camera_number, width: 640, height: 480, fps: 30}}" \
+  --display_data=true \
+  --task="Pick the cube and place it in the box" \
+  --policy.path=outputs/train/smolvla_piper_dataset/checkpoints/last/pretrained_model
 ```
-
-### 파라미터 상세
-*   `--policy.path`: (필수) 모델 가중치와 설정 파일이 위치한 폴더 경로입니다. 앞서 생성한 `outputs/smolvla_piper_model`을 입력합니다.
-*   `--env.name`: (필수) 시뮬레이션 또는 평가 환경의 이름입니다. (실제 환경 이름에 맞춰 `aloha`, `piper_env` 등으로 수정)
-*   `--eval.n_episodes`: 테스트를 수행할 총 에피소드 수입니다.
-*   `--eval.batch_size`: 병렬로 평가할 배치 크기입니다. 메모리에 맞춰 조절합니다.
-*   `--device`: 추론에 사용할 하드웨어 가속기입니다. (`cuda`, `cpu`, `mps` 등)
