@@ -7,6 +7,10 @@
 먼저 메인 프레임워크인 `RIA_lerobot` 환경이 구성되어 있어야 합니다.
 
 ```bash
+# 가상 환경 생성 및 활성화 (Python 3.10 권장)
+conda create -y -n lerobot python=3.10
+conda activate lerobot
+
 git clone https://github.com/RIA-acb/RIA_lerobot.git
 cd RIA_lerobot
 pip install -e .
@@ -17,10 +21,6 @@ pip install -e .
 평가를 진행할 모델 체크포인트를 로드하기 위해 프레임워크 최상위 경로에 `outputs` 폴더를 생성하고, 모델 파일들을 배치해야 합니다.
 
 ```bash
-# 가상 환경 생성 및 활성화 (Python 3.10 권장)
-conda create -y -n lerobot python=3.10
-conda activate lerobot
-
 # RIA_lerobot 루트 디렉토리에서 실행
 mkdir -p outputs/train
 git clone https://github.com/RIA-acb/smolvla_piper_dataset.git
